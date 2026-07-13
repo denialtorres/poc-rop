@@ -1,0 +1,16 @@
+# Secrets — never commit
+.env
+.env.*
+!.env.example
+
+# Ruby
+*.gem
+/.bundle/
+/vendor/bundle/
+/coverage/
+/tmp/
+/log/
+
+# Editor / OS
+.DS_Store
+*.swp

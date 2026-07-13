@@ -5,6 +5,7 @@
 
 require "bundler/setup"
 require "dry/monads"
+require "dotenv/load"
 require "irb"
 
 # require all lib files. order_error/order/menu first (deps), then rest.
