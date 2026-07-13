@@ -27,6 +27,9 @@ Any failure (bad input, item not on menu, out of stock, unknown coupon, …) sho
 { modifications: ["no onions", "extra spicy"], allergens: ["peanuts"] }
 ```
 
+<img width="808" height="612" alt="Screenshot 2026-07-12 at 9 21 58 p m" src="https://github.com/user-attachments/assets/a3612cf0-9e3e-4608-b64a-74550e49aeb9" />
+
+
 It fits the railway like any other station: enriches the order on success, returns `Failure(SpecialRequestError)` if the call or the JSON parse fails. If there's no note, it skips the LLM entirely and stays on the happy track.
 
 ## Setup
