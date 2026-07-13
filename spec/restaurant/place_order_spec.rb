@@ -3,12 +3,13 @@
 module Restaurant
   RSpec.describe PlaceOrder do
     subject(:result) do
-      described_class.new.call(customer_name:, items:, coupon_code:)
+      described_class.new.call(customer_name:, items:, coupon_code:, special_requests:)
     end
 
-    let(:customer_name) { "Dani" }
-    let(:items)         { [{ name: "Coke", qty: 3 }] }
-    let(:coupon_code)   { nil }
+    let(:customer_name)    { "Dani" }
+    let(:items)            { [{ name: "Coke", qty: 3 }] }
+    let(:coupon_code)      { nil }
+    let(:special_requests) { nil }   # nil => AI station skips, no Gemini call
 
     describe "happy path" do
       let(:items) { [{ name: "Coke", qty: 3 }, { name: "Classic Burger", qty: 1 }] }
@@ -101,6 +102,31 @@ module Restaurant
         it "fails with InvalidCouponError" do
           expect(result.failure).to be_a(InvalidCouponError)
         end
+      end
+    end
+
+    describe "with special requests (AI station, mocked)" do
+      let(:special_requests) { "no onions, allergic to peanuts" }
+
+      # fake Gemini: never a real call in specs
+      let(:llm_response) do
+        double("response", content: '{"modifications":["no onions"],"allergens":["peanuts"]}')
+      end
+      let(:chat) { double("RubyLLM::Chat", with_instructions: nil, ask: llm_response) }
+
+      before { allow(RubyLLM).to receive(:chat).and_return(chat) }
+
+      it "succeeds and stores the parsed requests on the order" do
+        order = result.value!
+
+        expect(order.parsed_requests).to eq(
+          modifications: ["no onions"],
+          allergens: ["peanuts"]
+        )
+      end
+
+      it "still charges the order normally" do
+        expect(result.value!.total).to eq(9.0)
       end
     end
 

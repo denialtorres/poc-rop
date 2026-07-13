@@ -10,4 +10,5 @@ module Restaurant
   class InvalidCouponError < OrderError; end
   class PaymentDeclinedError < OrderError; end
   class NegativeTotalError < OrderError; end
+  class SpecialRequestError < OrderError; end
 end
